@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">GarminKaptain</string>
+    <string name="title_activity_maps">Map</string>
+
+    <string name="label_view_reviews">View reviews</string>
+    <string name="label_rating">Rating: %1$.1f</string>
+    <string name="label_num_reviews">Review count: %1$d</string>
+</resources>
