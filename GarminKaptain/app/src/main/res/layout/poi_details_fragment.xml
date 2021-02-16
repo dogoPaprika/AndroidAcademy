@@ -30,17 +30,6 @@
         android:layout_marginTop="@dimen/spacing_large"
         android:orientation="horizontal">
 
-<!--        <TextView-->
-<!--            android:id="@+id/poi_rating_view"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_weight="1"-->
-<!--            android:gravity="center"-->
-<!--            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"-->
-<!--            tools:text="Rating: 5.0" />-->
-
-<!--        When using a RatingBar that supports user interaction, placing widgets to the left or right of the RatingBar is discouraged.-->
-        <!-- In this case we have reviews number to the right -->
         <RatingBar
             android:id="@+id/poi_rating_view"
             android:layout_width="wrap_content"
