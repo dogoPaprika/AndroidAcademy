@@ -1,6 +1,7 @@
 package com.example.garminkaptain.data
 
-import java.time.LocalDate
+import com.example.garminkaptain.helper.PoiReviews
+import com.example.garminkaptain.helper.PoiReviews.addReviews
 import java.util.*
 
 data class PointOfInterest(
@@ -27,8 +28,14 @@ data class Review(
     val rating: Float,
     val owner: String,
     val text: String,
-    val date: LocalDate
+    val date: Date
     )
+
+data class Date(
+    val year: Int,
+    val month: Int,
+    val day: Int
+)
 
 val poiList: List<PointOfInterest> = listOf(
     PointOfInterest(
@@ -102,3 +109,5 @@ val poiList: List<PointOfInterest> = listOf(
         ReviewSummary(0.0, 0)
     )
 )
+
+val k = addReviews(poiList)

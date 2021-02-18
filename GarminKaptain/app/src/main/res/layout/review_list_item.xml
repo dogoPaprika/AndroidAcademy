@@ -1,52 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="@dimen/spacing_normal"
-    android:paddingBottom="2dp">
+    android:paddingBottom="@dimen/spacing_small">
 
     <TextView
         android:id="@+id/title_review_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="6dp"
+        android:layout_marginStart="@dimen/spacing_normal"
+        android:layout_marginTop="@dimen/spacing_normal"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
         android:textColor="@color/purple_500"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="Review title" />
 
-    <LinearLayout
+    <RatingBar
+        android:id="@+id/rating_review_view"
+        style="@style/Base.Widget.AppCompat.RatingBar.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:orientation="horizontal">
+        android:layout_marginStart="@dimen/spacing_normal"
+        android:layout_marginTop="@dimen/spacing_big"
+        android:isIndicator="true"
+        android:numStars="5"
+        android:stepSize="0.1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/title_review_view" />
 
-        <RatingBar
-            android:id="@+id/rating_review_view"
-            style="@style/Base.Widget.AppCompat.RatingBar.Small"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="4dp"
-            android:isIndicator="true"
-            android:numStars="5"
-            android:stepSize="0.1" />
+    <TextView
+        android:id="@+id/date_review_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_normal"
+        android:layout_marginTop="@dimen/spacing_big"
+        android:text="@string/label_date_review"
+        app:layout_constraintStart_toEndOf="@+id/rating_review_view"
+        app:layout_constraintTop_toTopOf="@id/title_review_view" />
 
-        <TextView
-            android:id="@+id/date_review_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:text="@string/label_date_review" />
-
-    </LinearLayout>
 
     <TextView
         android:id="@+id/text_review_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_normal"
+        android:layout_marginTop="@dimen/spacing_normal"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
         android:textColor="@color/teal_700"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/rating_review_view"
         tools:text="Review text" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

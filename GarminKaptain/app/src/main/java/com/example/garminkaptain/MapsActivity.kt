@@ -19,7 +19,5 @@ class MapsActivity : AppCompatActivity() {
         val navController = navHostFragment.findNavController()
         findViewById<BottomNavigationView>(R.id.bottom_nav_view)
             .setupWithNavController(navController)
-
-        addReviews(poiList)
     }
 }

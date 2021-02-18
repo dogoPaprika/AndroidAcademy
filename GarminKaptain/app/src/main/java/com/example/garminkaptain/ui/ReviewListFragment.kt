@@ -11,6 +11,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.garminkaptain.R
+import com.example.garminkaptain.data.PointOfInterest
 import com.example.garminkaptain.data.Review
 import com.example.garminkaptain.data.poiList
 
@@ -27,7 +28,7 @@ class ReviewListFragment : Fragment() {
             titleView.text = review.owner
             textView.text = review.text
             ratingView.rating = review.rating
-            dateView.text = getString(R.string.label_date_review, review.date.year, review.date.monthValue, review.date.dayOfMonth)
+            dateView.text = getString(R.string.label_date_review, review.date.year, review.date.month, review.date.day)
         }
     }
 
@@ -47,9 +48,7 @@ class ReviewListFragment : Fragment() {
         override fun getItemCount(): Int = reviews.size
     }
 
-    // It keeps crashing, fragment has null arguments
-//    private val reviews = poiList.find{it.id == args.poiId}?.userReviews ?: ArrayList()
-    private val reviews = poiList.find{it.id == 39252.toLong()}!!.userReviews
+    private lateinit var reviews: List<Review>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.findViewById<RecyclerView>(R.id.review_list).apply {
@@ -57,6 +56,8 @@ class ReviewListFragment : Fragment() {
             layoutManager = LinearLayoutManager(context)
             adapter = ReviewListAdapter()
         }
+
+        reviews = poiList.find{it.id == args.poiId}?.userReviews ?: ArrayList()
     }
 
     override fun onCreateView(
