@@ -4,38 +4,46 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.garminkaptain.R
 import com.example.garminkaptain.data.poiList
+import com.example.garminkaptain.viewModel.PoiViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 
 class PoiMapFragment : Fragment(R.layout.poi_map_fragment), GoogleMap.OnInfoWindowClickListener {
-    private val pointsOfInterest = poiList
+    private var pointsOfInterest = poiList
     private lateinit var mapFragment: SupportMapFragment
+
+    private val viewModel: PoiViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         mapFragment = childFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment
         view.doOnLayout {
             refreshMap()
         }
+
+        viewModel.getPoiList().observe(viewLifecycleOwner, Observer {
+            it?.let {
+                pointsOfInterest = it
+            }
+        })
     }
 
     override fun onInfoWindowClick(selectedMarker: Marker?) {
         selectedMarker?.let { marker ->
-            val poi = pointsOfInterest.find {
-                it.mapLocation.latitude == marker.position.latitude && it.mapLocation.longitude == marker.position.longitude
-            }
-            poi?.let {
-                findNavController().navigate(
-                    PoiMapFragmentDirections.actionPoiMapFragmentToPoiDetailsFragment(it.id)
-                )
-            }
+            viewModel.findPoiOnLatitudeLongitude(marker.position.latitude, marker.position.longitude)
+                .observe(viewLifecycleOwner, Observer { poi ->
+                poi.let {
+                    findNavController().navigate(
+                        PoiMapFragmentDirections.actionPoiMapFragmentToPoiDetailsFragment(poi.id)
+                    )
+                }
+            })
         }
     }
 

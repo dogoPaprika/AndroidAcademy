@@ -32,6 +32,11 @@ class PoiViewModel : ViewModel() {
         return poiListLiveData
     }
 
+    fun findPoiOnLatitudeLongitude(latitude: Double, longitude: Double): LiveData<PointOfInterest> {
+        loadPoi(latitude, longitude)
+        return poiLiveData
+    }
+
     private fun loadPoiList() {
         poiListLiveData.postValue(PoiRepository.getPoiList())
     }
@@ -40,9 +45,12 @@ class PoiViewModel : ViewModel() {
         poiLiveData.postValue(PoiRepository.getPoi(id))
     }
 
+    private fun loadPoi(latitude: Double, longitude: Double) {
+        poiLiveData.postValue(PoiRepository.findPoiOnLatitudeLongitude(latitude, longitude))
+    }
+
     override fun onCleared() {
         super.onCleared()
         Log.d(TAG, "onCleared() called")
     }
-
 }
