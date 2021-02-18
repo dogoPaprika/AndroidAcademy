@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.garminkaptain.TAG
 import com.example.garminkaptain.data.PointOfInterest
+import com.example.garminkaptain.data.Review
 import com.example.garminkaptain.model.PoiRepository
 
 class PoiViewModel : ViewModel() {
@@ -22,6 +23,10 @@ class PoiViewModel : ViewModel() {
         MutableLiveData<PointOfInterest>()
     }
 
+    private val reviewListLiveData: MutableLiveData<List<Review>> by lazy {
+        MutableLiveData<List<Review>>()
+    }
+
     fun getPoi(id: Long): LiveData<PointOfInterest> {
         loadPoi(id)
         return poiLiveData
@@ -32,11 +37,6 @@ class PoiViewModel : ViewModel() {
         return poiListLiveData
     }
 
-    fun findPoiOnLatitudeLongitude(latitude: Double, longitude: Double): LiveData<PointOfInterest> {
-        loadPoi(latitude, longitude)
-        return poiLiveData
-    }
-
     private fun loadPoiList() {
         poiListLiveData.postValue(PoiRepository.getPoiList())
     }
@@ -45,8 +45,13 @@ class PoiViewModel : ViewModel() {
         poiLiveData.postValue(PoiRepository.getPoi(id))
     }
 
-    private fun loadPoi(latitude: Double, longitude: Double) {
-        poiLiveData.postValue(PoiRepository.findPoiOnLatitudeLongitude(latitude, longitude))
+    fun getReviewList(id: Long): LiveData<List<Review>> {
+        loadReviewList(id)
+        return reviewListLiveData
+    }
+
+    fun loadReviewList(id: Long) {
+        reviewListLiveData.postValue(PoiRepository.getReviewList(id))
     }
 
     override fun onCleared() {

@@ -36,9 +36,6 @@ class PoiDetailsFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        val poiId = args.poiId
-//        val poi = poiList.find { it.id == poiId }
-
         view.apply {
             nameTextView = findViewById(R.id.poi_name_view)
             typeTextView = findViewById(R.id.poi_type_view)
@@ -64,26 +61,5 @@ class PoiDetailsFragment : Fragment() {
                 }
             }
         })
-
-//        poi?.let {
-//            view.apply {
-//                findViewById<TextView>(R.id.poi_name_view).text = poi.name
-//                findViewById<TextView>(R.id.poi_type_view).text = poi.poiType
-//                findViewById<RatingBar>(R.id.poi_rating_view).rating =
-//                    poi.reviewSummary.averageRating.toFloat()
-//                findViewById<TextView>(R.id.poi_num_reviews_view).text =
-//                    getString(R.string.label_num_reviews, poi.reviewSummary.numberOfReviews)
-//
-//                val button = findViewById<Button>(R.id.poi_view_reviews_button)
-//                button.isEnabled = poi.reviewSummary.numberOfReviews > 0
-//                button.setOnClickListener {
-//                    findNavController().navigate(
-//                        PoiDetailsFragmentDirections.actionPoiDetailsFragmentToReviewListFragment(
-//                            poiId
-//                        )
-//                    )
-//                }
-//            }
-//        }
     }
 }

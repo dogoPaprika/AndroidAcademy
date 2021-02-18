@@ -1,5 +1,6 @@
 package com.example.garminkaptain.model
 
+import com.example.garminkaptain.data.Review
 import com.example.garminkaptain.data.poiList
 
 object PoiRepository {
@@ -7,7 +8,5 @@ object PoiRepository {
 
     fun getPoi(id: Long) = poiList.find { it.id == id }
 
-    fun findPoiOnLatitudeLongitude(latitude: Double, longitude: Double) = poiList.find {
-        it.mapLocation.latitude == latitude && it.mapLocation.longitude == longitude
-    }
+    fun getReviewList(id: Long): List<Review>? = getPoi(id)?.userReviews
 }

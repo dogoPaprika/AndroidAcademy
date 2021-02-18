@@ -1,6 +1,7 @@
 package com.example.garminkaptain.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
@@ -14,6 +15,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.example.garminkaptain.TAG
 
 class PoiMapFragment : Fragment(R.layout.poi_map_fragment), GoogleMap.OnInfoWindowClickListener {
     private var pointsOfInterest = poiList
@@ -36,14 +38,14 @@ class PoiMapFragment : Fragment(R.layout.poi_map_fragment), GoogleMap.OnInfoWind
 
     override fun onInfoWindowClick(selectedMarker: Marker?) {
         selectedMarker?.let { marker ->
-            viewModel.findPoiOnLatitudeLongitude(marker.position.latitude, marker.position.longitude)
-                .observe(viewLifecycleOwner, Observer { poi ->
-                poi.let {
-                    findNavController().navigate(
-                        PoiMapFragmentDirections.actionPoiMapFragmentToPoiDetailsFragment(poi.id)
-                    )
-                }
-            })
+            val poi = pointsOfInterest.find {
+                it.mapLocation.latitude == marker.position.latitude && it.mapLocation.longitude == marker.position.longitude
+            }
+            poi?.let {
+                findNavController().navigate(
+                    PoiMapFragmentDirections.actionPoiMapFragmentToPoiDetailsFragment(it.id)
+                )
+            }
         }
     }
 
