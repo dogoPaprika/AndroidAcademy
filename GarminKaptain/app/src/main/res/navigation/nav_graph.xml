@@ -23,6 +23,9 @@
             android:name="poiId"
             app:argType="long"
             android:defaultValue="-1L" />
+        <action
+            android:id="@+id/action_poiDetailsFragment_to_reviewListFragment"
+            app:destination="@id/reviewListFragment" />
     </fragment>
 
     <fragment
@@ -32,5 +35,15 @@
         <action
             android:id="@+id/action_poiMapFragment_to_poiDetailsFragment"
             app:destination="@id/poiDetailsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/reviewListFragment"
+        android:name="com.example.garminkaptain.ui.ReviewListFragment"
+        android:label="ReviewListFragment" >
+        <argument
+            android:name="poiId"
+            app:argType="long"
+            android:defaultValue="-1L" />
     </fragment>
 </navigation>

@@ -1,11 +1,15 @@
 package com.example.garminkaptain.data
 
+import java.time.LocalDate
+import java.util.*
+
 data class PointOfInterest(
     val id: Long,
     val mapLocation: MapLocation,
     val name: String,
     val poiType: String,
-    val reviewSummary: ReviewSummary
+    val reviewSummary: ReviewSummary,
+    val userReviews: ArrayList<Review> = arrayListOf()
 )
 
 data class MapLocation(
@@ -17,6 +21,14 @@ data class ReviewSummary(
     val averageRating: Double,
     val numberOfReviews: Int
 )
+
+data class Review(
+    val id: Long,
+    val rating: Float,
+    val owner: String,
+    val text: String,
+    val date: LocalDate
+    )
 
 val poiList: List<PointOfInterest> = listOf(
     PointOfInterest(

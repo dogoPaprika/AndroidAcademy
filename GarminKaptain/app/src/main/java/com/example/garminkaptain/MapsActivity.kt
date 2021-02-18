@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.garminkaptain.data.poiList
+import com.example.garminkaptain.helper.PoiReviews.addReviews
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MapsActivity : AppCompatActivity() {
@@ -17,5 +19,7 @@ class MapsActivity : AppCompatActivity() {
         val navController = navHostFragment.findNavController()
         findViewById<BottomNavigationView>(R.id.bottom_nav_view)
             .setupWithNavController(navController)
+
+        addReviews(poiList)
     }
 }
