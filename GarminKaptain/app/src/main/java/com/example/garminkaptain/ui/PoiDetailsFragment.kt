@@ -8,14 +8,24 @@ import android.widget.Button
 import android.widget.RatingBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.garminkaptain.R
-import com.example.garminkaptain.data.poiList
+import com.example.garminkaptain.viewModel.PoiViewModel
 
 class PoiDetailsFragment : Fragment() {
 
     private val args: PoiDetailsFragmentArgs by navArgs()
+
+    private val viewModel: PoiViewModel by activityViewModels()
+
+    private lateinit var nameTextView: TextView
+    private lateinit var typeTextView: TextView
+    private lateinit var ratingBar: RatingBar
+    private lateinit var numReviewsTextView: TextView
+    private lateinit var reviewsButton: Button
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,28 +36,54 @@ class PoiDetailsFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val poiId = args.poiId
-        val poi = poiList.find { it.id == poiId }
+//        val poiId = args.poiId
+//        val poi = poiList.find { it.id == poiId }
 
-        poi?.let {
-            view.apply {
-                findViewById<TextView>(R.id.poi_name_view).text = poi.name
-                findViewById<TextView>(R.id.poi_type_view).text = poi.poiType
-                findViewById<RatingBar>(R.id.poi_rating_view).rating =
-                    poi.reviewSummary.averageRating.toFloat()
-                findViewById<TextView>(R.id.poi_num_reviews_view).text =
-                    getString(R.string.label_num_reviews, poi.reviewSummary.numberOfReviews)
+        view.apply {
+            nameTextView = findViewById(R.id.poi_name_view)
+            typeTextView = findViewById(R.id.poi_type_view)
+            ratingBar = findViewById(R.id.poi_rating_view)
+            numReviewsTextView = findViewById(R.id.poi_num_reviews_view)
+            reviewsButton = findViewById(R.id.poi_view_reviews_button)
+        }
 
-                val button = findViewById<Button>(R.id.poi_view_reviews_button)
-                button.isEnabled = poi.reviewSummary.numberOfReviews > 0
-                button.setOnClickListener {
+        viewModel.getPoi(args.poiId).observe(viewLifecycleOwner, Observer { poi ->
+            poi?.let {
+                nameTextView.text = poi.name
+                typeTextView.text = poi.poiType
+                ratingBar.rating = poi.reviewSummary.averageRating.toFloat()
+                numReviewsTextView.text = getString(R.string.label_num_reviews, poi.reviewSummary.numberOfReviews)
+
+                reviewsButton.isEnabled = poi.reviewSummary.numberOfReviews > 0
+                reviewsButton.setOnClickListener {
                     findNavController().navigate(
                         PoiDetailsFragmentDirections.actionPoiDetailsFragmentToReviewListFragment(
-                            poiId
+                            args.poiId
                         )
                     )
                 }
             }
-        }
+        })
+
+//        poi?.let {
+//            view.apply {
+//                findViewById<TextView>(R.id.poi_name_view).text = poi.name
+//                findViewById<TextView>(R.id.poi_type_view).text = poi.poiType
+//                findViewById<RatingBar>(R.id.poi_rating_view).rating =
+//                    poi.reviewSummary.averageRating.toFloat()
+//                findViewById<TextView>(R.id.poi_num_reviews_view).text =
+//                    getString(R.string.label_num_reviews, poi.reviewSummary.numberOfReviews)
+//
+//                val button = findViewById<Button>(R.id.poi_view_reviews_button)
+//                button.isEnabled = poi.reviewSummary.numberOfReviews > 0
+//                button.setOnClickListener {
+//                    findNavController().navigate(
+//                        PoiDetailsFragmentDirections.actionPoiDetailsFragmentToReviewListFragment(
+//                            poiId
+//                        )
+//                    )
+//                }
+//            }
+//        }
     }
 }

@@ -5,12 +5,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.garminkaptain.R
 import com.example.garminkaptain.data.PointOfInterest
 import com.example.garminkaptain.data.poiList
+import com.example.garminkaptain.viewModel.PoiViewModel
 
 class PoiListFragment : Fragment(R.layout.poi_list_fragment) {
     inner class PoiListItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -44,13 +47,22 @@ class PoiListFragment : Fragment(R.layout.poi_list_fragment) {
         override fun getItemCount(): Int = pointsOfInterest.size
     }
 
-    private val pointsOfInterest = poiList
+    private var pointsOfInterest = poiList
+    private var adapter = PoiListAdapter()
+    private val viewModel: PoiViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.findViewById<RecyclerView>(R.id.poi_list).apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
-            adapter = PoiListAdapter()
+            adapter = this@PoiListFragment.adapter
         }
+
+        viewModel.getPoiList().observe(viewLifecycleOwner, Observer {
+            it?.let {
+                pointsOfInterest = it
+                adapter.notifyDataSetChanged()
+            }
+        })
     }
 }
