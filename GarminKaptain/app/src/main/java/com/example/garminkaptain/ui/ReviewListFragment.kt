@@ -12,10 +12,12 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.garminkaptain.R
 import com.example.garminkaptain.data.Review
 import com.example.garminkaptain.data.poiList
 import com.example.garminkaptain.viewModel.PoiViewModel
+import java.util.ArrayList
 
 class ReviewListFragment : Fragment() {
     private val args: ReviewListFragmentArgs by navArgs()
@@ -50,7 +52,7 @@ class ReviewListFragment : Fragment() {
         override fun getItemCount(): Int = reviews.size
     }
 
-    private lateinit var reviews: List<Review>
+    private var reviews = poiList[0].userReviews
     private var adapter = ReviewListAdapter()
     private val viewModel: PoiViewModel by activityViewModels()
 
@@ -61,9 +63,15 @@ class ReviewListFragment : Fragment() {
             adapter = this@ReviewListFragment.adapter
         }
 
+        val swipeRefreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.swipeToRefreshReviews)
+        swipeRefreshLayout.setOnRefreshListener { viewModel.loadReviewList(args.poiId) }
+
+        viewModel.getLoading()
+            .observe(viewLifecycleOwner, Observer { swipeRefreshLayout.isRefreshing = it })
+
         viewModel.getReviewList(args.poiId).observe(viewLifecycleOwner, Observer {
             it?.let {
-                reviews = it
+                reviews = it as ArrayList<Review>
                 adapter.notifyDataSetChanged()
             }
         })
