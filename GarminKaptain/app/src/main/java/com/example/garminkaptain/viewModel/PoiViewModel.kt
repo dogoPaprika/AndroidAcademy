@@ -70,7 +70,7 @@ class PoiViewModel : ViewModel() {
         }
     }
 
-    private fun refreshList() {
+    fun refreshList() {
         viewModelScope.launch {
             while (true) {
                 delay(5000)
