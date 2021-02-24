@@ -6,13 +6,15 @@ import com.example.garminkaptain.TAG
 import com.example.garminkaptain.data.PointOfInterest
 import com.example.garminkaptain.data.Review
 import com.example.garminkaptain.model.PoiRepository
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 
 class PoiViewModel : ViewModel() {
 
     init {
         Log.d(TAG, "init called")
+
+        refreshList()
     }
 
     private val poiListLiveData: MutableLiveData<List<PointOfInterest>> by lazy {
@@ -64,6 +66,15 @@ class PoiViewModel : ViewModel() {
             PoiRepository.getReviewList(id).collect {
                 reviewListLiveData.postValue(it)
                 loadingLiveData.postValue(false)
+            }
+        }
+    }
+
+    private fun refreshList() {
+        viewModelScope.launch {
+            while (true) {
+                delay(5000)
+                loadPoiList()
             }
         }
     }

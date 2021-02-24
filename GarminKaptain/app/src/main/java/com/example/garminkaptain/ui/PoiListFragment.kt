@@ -72,22 +72,5 @@ class PoiListFragment : Fragment(R.layout.poi_list_fragment) {
                 adapter.notifyDataSetChanged()
             }
         })
-
-        refreshListConstantly()
     }
-
-    private fun refreshListConstantly(): CompletableJob {
-        val parentJob = Job()
-        val scope = CoroutineScope(parentJob + Dispatchers.IO)
-
-        scope.launch {
-            while (true) {
-                delay(5000)
-                viewModel.loadPoiList()
-            }
-        }
-
-        return parentJob
-    }
-
 }
