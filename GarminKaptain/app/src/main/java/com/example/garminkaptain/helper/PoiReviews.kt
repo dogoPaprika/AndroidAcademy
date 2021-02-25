@@ -10,17 +10,20 @@ import kotlin.random.Random.Default.nextFloat
 import kotlin.random.Random.Default.nextInt
 
 object PoiReviews {
-    fun addReviews(poiList: List<PointOfInterest>) {
+    fun addReviews(poiList: List<PointOfInterest>): ArrayList<Review> {
+        val reviewList = ArrayList<Review>()
         for (poi in poiList) {
             for (i in 1..poi.reviewSummary.numberOfReviews) {
-                poi.userReviews.add(newReview(poi))
+                reviewList.add(newReview(poi))
             }
         }
+        return reviewList
     }
 
     private fun newReview(poi: PointOfInterest): Review {
         return Review(
             getRandomId(),
+            poi.id,
             nextFloat() * 5,
             getRandomOwner(),
             getRandomText(poi.name),

@@ -16,6 +16,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.garminkaptain.R
 import com.example.garminkaptain.data.Review
 import com.example.garminkaptain.data.poiList
+import com.example.garminkaptain.data.reviewList
 import com.example.garminkaptain.viewModel.PoiViewModel
 import java.util.ArrayList
 
@@ -52,7 +53,7 @@ class ReviewListFragment : Fragment() {
         override fun getItemCount(): Int = reviews.size
     }
 
-    private var reviews = poiList[0].userReviews
+    private var reviews = reviewList
     private var adapter = ReviewListAdapter()
     private val viewModel: PoiViewModel by activityViewModels()
 
