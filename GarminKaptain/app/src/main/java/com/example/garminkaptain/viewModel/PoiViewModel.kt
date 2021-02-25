@@ -9,12 +9,15 @@ import com.example.garminkaptain.model.PoiRepository
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import android.app.Application
+import com.example.garminkaptain.data.PoiDatabase
 import kotlinx.coroutines.launch
 
 class PoiViewModel(application: Application) : AndroidViewModel(application) {
+    private var poiDatabase: PoiDatabase
 
     init {
         Log.d(TAG, "init called")
+        poiDatabase = PoiDatabase.getInstance(application)
 
         refreshList()
     }
@@ -35,7 +38,7 @@ class PoiViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getPoi(id: Long): LiveData<PointOfInterest?> = liveData {
         loadingLiveData.postValue(true)
-        PoiRepository.getPoi(getApplication(), id)?.collect {
+        PoiRepository.getPoi(poiDatabase, id)?.collect {
             emit(it)
             loadingLiveData.postValue(false)
         }
@@ -50,7 +53,7 @@ class PoiViewModel(application: Application) : AndroidViewModel(application) {
     fun loadPoiList() {
         loadingLiveData.postValue(true)
         viewModelScope.launch {
-            PoiRepository.getPoiList(getApplication())?.collect {
+            PoiRepository.getPoiList(poiDatabase)?.collect {
                 poiListLiveData.postValue(it)
                 loadingLiveData.postValue(false)
             }
@@ -65,7 +68,7 @@ class PoiViewModel(application: Application) : AndroidViewModel(application) {
     fun loadReviewList(id: Long) {
         loadingLiveData.postValue(true)
         viewModelScope.launch {
-            PoiRepository.getReviewList(getApplication(), id).collect {
+            PoiRepository.getReviewList(poiDatabase, id).collect {
                 reviewListLiveData.postValue(it)
                 loadingLiveData.postValue(false)
             }

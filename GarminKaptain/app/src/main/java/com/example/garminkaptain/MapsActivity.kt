@@ -5,11 +5,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.garminkaptain.data.PoiDatabase
 import com.example.garminkaptain.data.poiList
 import com.example.garminkaptain.helper.PoiReviews.addReviews
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MapsActivity : AppCompatActivity() {
+
+    lateinit var poiDatabase: PoiDatabase
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
@@ -19,5 +23,7 @@ class MapsActivity : AppCompatActivity() {
         val navController = navHostFragment.findNavController()
         findViewById<BottomNavigationView>(R.id.bottom_nav_view)
             .setupWithNavController(navController)
+
+        poiDatabase = PoiDatabase.getInstance(applicationContext)
     }
 }
