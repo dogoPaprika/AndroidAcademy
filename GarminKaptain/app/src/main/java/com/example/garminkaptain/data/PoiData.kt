@@ -11,14 +11,18 @@ data class PointOfInterest(
     @Embedded val reviewSummary: ReviewSummary
 )
 
+@Entity(tableName = "map_location_table")
 data class MapLocation(
     val latitude: Double,
-    val longitude: Double
+    val longitude: Double,
+    @PrimaryKey val poiId: Long
 )
 
+@Entity(tableName = "review_summary_table")
 data class ReviewSummary(
     val averageRating: Double,
-    val numberOfReviews: Int
+    val numberOfReviews: Int,
+    @PrimaryKey val poiId: Long
 )
 
 @Entity(tableName = "review_table")
@@ -37,6 +41,7 @@ data class Date(
     val day: Int
 )
 
+// relation 1:n for Poi:Review
 data class PoiWithReviews(
     @Embedded val poi: PointOfInterest,
     @Relation(
@@ -44,4 +49,24 @@ data class PoiWithReviews(
         entityColumn = "poiId"
     )
     val reviews: List<Review>
+)
+
+// relation 1:1 for Poi:MapLocation
+data class PoiWithMapLocation(
+    @Embedded val poi: PointOfInterest,
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "poiId"
+    )
+    val mapLocation: MapLocation
+)
+
+// relation 1:1 for Poi:ReviewSummary
+data class PoiWithReviewSummary(
+    @Embedded val poi: PointOfInterest,
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "poiId"
+    )
+    val reviewSummary: ReviewSummary
 )
