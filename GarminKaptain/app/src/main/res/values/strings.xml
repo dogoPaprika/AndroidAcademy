@@ -7,6 +7,11 @@
     <string name="label_num_reviews">Review count: %1$d</string>
     <string name="label_list">List</string>
     <string name="label_map">Map</string>
+    <string name="label_sort">Sort</string>
+    <string name="label_poi_sort">Poi Sort</string>
+
+
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 

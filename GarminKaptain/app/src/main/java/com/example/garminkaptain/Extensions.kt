@@ -1,5 +1,4 @@
 package com.example.garminkaptain
 
-
-inline val <reified T> T.TAG: String
-    get() = T::class.java.simpleName
+inline val <reified T> T.TAG
+    get() = T::class.java.name.substringAfterLast('.')

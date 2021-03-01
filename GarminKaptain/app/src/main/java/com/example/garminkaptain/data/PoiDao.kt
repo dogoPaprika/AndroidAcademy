@@ -32,4 +32,11 @@ interface PoiDao {
     @Insert
     fun insertAllReview(reviewList: List<Review>)
 
+    @Transaction
+    @Query("SELECT * FROM poi_table WHERE id=:id")
+    suspend fun getPoiWithReviews(id: Long): PoiWithReviews
+
+    @Transaction
+    @Query("SELECT * FROM poi_table")
+    suspend fun getAllPoiWithReviews(): List<PoiWithReviews>
 }

@@ -22,7 +22,7 @@ data class MapLocation(
 data class ReviewSummary(
     val averageRating: Double,
     val numberOfReviews: Int,
-    @PrimaryKey val poiId: Long
+    @PrimaryKey @Embedded(prefix = "poi_id") val poiId: Long
 )
 
 @Entity(tableName = "review_table")

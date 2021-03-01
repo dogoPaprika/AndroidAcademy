@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="poi_sort_array">
+        <item>Rating</item>
+        <item>Reviews</item>
+    </string-array>
+</resources>
