@@ -32,6 +32,13 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    kapt {
+        arguments {
+            arg("room.schemaLocation", "$projectDir/build/schemas")
+            arg("room.incremental", "true")
+            arg("room.expandProjection", "true")
+        }
+    }
 }
 
 dependencies {

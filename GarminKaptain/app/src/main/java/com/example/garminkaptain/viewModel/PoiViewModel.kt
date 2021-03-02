@@ -17,7 +17,8 @@ class PoiViewModel(application: Application) : AndroidViewModel(application) {
         Log.d(TAG, "init called")
         poiDatabase = PoiDatabase.getInstance(application)
 
-        loadDB()
+        //loadDB()
+        //deleteDB()
 
         refreshList()
     }
@@ -35,6 +36,14 @@ class PoiViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun getLoading(): LiveData<Boolean> = loadingLiveData
+
+    fun deletePoi(id: Long) {
+        loadingLiveData.postValue(true)
+        viewModelScope.launch(Dispatchers.IO) {
+            PoiRepository.deletePoi(poiDatabase, id)
+            loadingLiveData.postValue(false)
+        }
+    }
 
     fun getPoi(id: Long): LiveData<PointOfInterest?> = liveData {
         loadingLiveData.postValue(true)
@@ -86,10 +95,16 @@ class PoiViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun loadDB() {
         viewModelScope.launch(Dispatchers.IO) {
-            //poiDatabase.getPoiDao().insertAllPoi(poiList)
+            poiDatabase.getPoiDao().insertAllPoi(poiList)
             poiDatabase.getPoiDao().insertAllReview(reviewList)
         }
+    }
 
+    private fun deleteDB() {
+        viewModelScope.launch(Dispatchers.IO) {
+            poiDatabase.getPoiDao().deleteAllReview()
+            poiDatabase.getPoiDao().deleteAllPoi()
+        }
     }
 
     override fun onCleared() {

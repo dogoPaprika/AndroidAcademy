@@ -24,9 +24,7 @@ interface PoiDao {
     @Query("SELECT * from poi_table WHERE id=:id")
     fun getPoi(id: Long): Flow<PointOfInterest>
 
-    @Query("SELECT * from poi_table P " +
-            "INNER JOIN review_table R ON P.id = R.poiId " +
-            "WHERE P.id = :id")
+    @Query("SELECT * from review_table WHERE poiId = :id")
     fun getReviews(id: Long): Flow<List<Review>?>
 
     @Insert
@@ -39,4 +37,16 @@ interface PoiDao {
     @Transaction
     @Query("SELECT * FROM poi_table")
     suspend fun getAllPoiWithReviews(): List<PoiWithReviews>
+
+    @Query("DELETE FROM review_table")
+    fun deleteAllReview()
+
+    @Query("DELETE FROM poi_table WHERE id=:id")
+    fun deletePoi(id: Long)
+
+    @Query("DELETE FROM review_table WHERE poiId=:id")
+    fun deleteReviews(id: Long)
+
+    @Query("DELETE FROM poi_table")
+    fun deleteAllPoi()
 }

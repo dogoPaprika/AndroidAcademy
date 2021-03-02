@@ -30,6 +30,11 @@ class PoiListFragment : Fragment(R.layout.poi_list_fragment) {
                     PoiListFragmentDirections.actionPoiListFragmentToPoiDetailsFragment(poi.id)
                 )
             }
+
+            itemView.setOnLongClickListener{
+                viewModel.deletePoi(poi.id)
+                true
+            }
         }
     }
 

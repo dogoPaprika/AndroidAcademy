@@ -14,4 +14,9 @@ object PoiRepository {
 
     fun getReviewList(db: PoiDatabase, id: Long): Flow<List<Review>?> =
         db.getPoiDao().getReviews(id)
+
+    fun deletePoi(db: PoiDatabase, id: Long) {
+        db.getPoiDao().deletePoi(id)
+        db.getPoiDao().deleteReviews(id)
+    }
 }
