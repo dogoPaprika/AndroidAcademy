@@ -3,13 +3,11 @@ package com.example.garminkaptain.viewModel
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.garminkaptain.TAG
-import com.example.garminkaptain.data.PointOfInterest
-import com.example.garminkaptain.data.Review
 import com.example.garminkaptain.model.PoiRepository
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import android.app.Application
-import com.example.garminkaptain.data.PoiDatabase
+import com.example.garminkaptain.data.*
 import kotlinx.coroutines.launch
 
 class PoiViewModel(application: Application) : AndroidViewModel(application) {
@@ -18,6 +16,8 @@ class PoiViewModel(application: Application) : AndroidViewModel(application) {
     init {
         Log.d(TAG, "init called")
         poiDatabase = PoiDatabase.getInstance(application)
+
+        loadDB()
 
         refreshList()
     }
@@ -82,6 +82,14 @@ class PoiViewModel(application: Application) : AndroidViewModel(application) {
                 loadPoiList()
             }
         }
+    }
+
+    private fun loadDB() {
+        viewModelScope.launch(Dispatchers.IO) {
+            //poiDatabase.getPoiDao().insertAllPoi(poiList)
+            poiDatabase.getPoiDao().insertAllReview(reviewList)
+        }
+
     }
 
     override fun onCleared() {

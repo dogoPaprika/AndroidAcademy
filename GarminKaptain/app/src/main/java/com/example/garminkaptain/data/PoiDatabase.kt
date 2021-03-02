@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [PointOfInterest::class, Review::class], version = 1)
+@Database(entities = [PointOfInterest::class, Review::class, MapLocation::class, ReviewSummary::class], version = 1)
 abstract class PoiDatabase : RoomDatabase() {
     abstract fun getPoiDao(): PoiDao
 

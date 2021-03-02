@@ -1,7 +1,5 @@
 package com.example.garminkaptain.model
 
-import android.app.Application
-import android.content.Context
 import com.example.garminkaptain.data.PoiDatabase
 import com.example.garminkaptain.data.PointOfInterest
 import com.example.garminkaptain.data.Review

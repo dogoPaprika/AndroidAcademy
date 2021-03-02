@@ -15,14 +15,14 @@ data class PointOfInterest(
 data class MapLocation(
     val latitude: Double,
     val longitude: Double,
-    @PrimaryKey val poiId: Long
+    @PrimaryKey val poiIdMap: Long
 )
 
 @Entity(tableName = "review_summary_table")
 data class ReviewSummary(
     val averageRating: Double,
     val numberOfReviews: Int,
-    @PrimaryKey @Embedded(prefix = "poi_id") val poiId: Long
+    @PrimaryKey val poiIdReview: Long
 )
 
 @Entity(tableName = "review_table")
