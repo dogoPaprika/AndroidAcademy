@@ -10,6 +10,7 @@ import android.app.Application
 import com.example.garminkaptain.data.*
 import kotlinx.coroutines.launch
 
+
 class PoiViewModel(application: Application) : AndroidViewModel(application) {
     private var poiDatabase: PoiDatabase
 

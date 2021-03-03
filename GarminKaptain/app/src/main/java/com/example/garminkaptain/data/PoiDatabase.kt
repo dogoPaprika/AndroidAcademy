@@ -6,6 +6,8 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.internal.synchronized
 
 @Database(entities = [PointOfInterest::class, Review::class, MapLocation::class, ReviewSummary::class], version = 1)
 abstract class PoiDatabase : RoomDatabase() {
@@ -22,15 +24,17 @@ abstract class PoiDatabase : RoomDatabase() {
     }
 
     companion object{
-        private var INSTANCE: PoiDatabase? = null
-        fun getInstance(context: Context): PoiDatabase{
-            if (INSTANCE == null){
-                INSTANCE = Room.databaseBuilder(
-                    context,
-                    PoiDatabase::class.java,
-                    "poi-database")
-                    .build()
-            }
+       private var INSTANCE: PoiDatabase? = null
+
+        @Synchronized fun getInstance(context: Context): PoiDatabase{
+            if (INSTANCE == null) {
+                    INSTANCE = Room.databaseBuilder(
+                        context,
+                        PoiDatabase::class.java,
+                        "poi-database"
+                    )
+                        .build()
+                }
 
             return INSTANCE as PoiDatabase
         }
