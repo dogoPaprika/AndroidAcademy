@@ -28,7 +28,7 @@ interface PoiDao {
     suspend fun getAllReview(id: Long): List<Review>
 
     @Query("SELECT * from poi_table WHERE id=:id")
-    fun getPoi(id: Long): Flow<PointOfInterest>
+    fun getPoi(id: Long): PointOfInterest
 
     @Transaction
     @Query("SELECT * FROM poi_table WHERE id=:id")

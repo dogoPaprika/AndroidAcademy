@@ -73,7 +73,7 @@ class PoiDetailsFragment : Fragment(R.layout.poi_details_fragment2) {
 
         val model: PoiViewModel by activityViewModels()
         model.getPoi(args.poiId).observe(viewLifecycleOwner, Observer {
-            onPoiReceived(it)
+            onPoiReceived(it?.data)
         })
 
         reviewsButton.setOnClickListener {

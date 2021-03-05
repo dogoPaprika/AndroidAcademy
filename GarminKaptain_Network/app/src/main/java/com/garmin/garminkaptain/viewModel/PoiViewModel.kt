@@ -20,7 +20,8 @@ import java.lang.Exception
 class PoiViewModel(application: Application) : AndroidViewModel(application) {
 
     private var currentBbox: MapBoundingBox? = null
-    private val poiRepository = PoiRepository((getApplication() as KaptainApplication).poiDatabase, KaptainWebservice())
+    private val poiRepository =
+        PoiRepository((getApplication() as KaptainApplication).poiDatabase, KaptainWebservice())
 
     init {
         Log.d(TAG, "init called")
@@ -30,13 +31,34 @@ class PoiViewModel(application: Application) : AndroidViewModel(application) {
         MutableLiveData<Resource<List<PointOfInterest>>>()
     }
 
+    private val poiLiveData: MutableLiveData<Resource<PointOfInterest>> by lazy {
+        MutableLiveData<Resource<PointOfInterest>>()
+    }
+
     fun getPoiListData(): LiveData<Resource<List<PointOfInterest>>> {
         return poiListLiveData
     }
 
-    fun getPoi(id: Long): LiveData<PointOfInterest?> = liveData {
-        poiRepository.getPoi(id)?.collect {
-            emit(it)
+    fun getPoi(id: Long): LiveData<Resource<PointOfInterest>?> {
+        loadPoi(id)
+        return poiLiveData
+    }
+
+    fun loadPoi(id: Long) {
+        viewModelScope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    poiLiveData.postValue(Resource.Loading())
+                    val poi = poiRepository.getPoi(id)
+                    val success = Resource.Success<PointOfInterest>(poi)
+
+                    poiLiveData.postValue(success)
+                }
+            } catch (ex: Exception) {
+                val message = ex.message ?: ""
+                Log.d(TAG, "Exception $message")
+                poiLiveData.postValue(Resource.Error(message))
+            }
         }
     }
 

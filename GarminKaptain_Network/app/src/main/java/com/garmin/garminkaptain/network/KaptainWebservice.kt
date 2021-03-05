@@ -1,6 +1,6 @@
 package com.garmin.garminkaptain.network
 
-import com.garmin.garminkaptain.data.Review
+import com.garmin.garminkaptain.data.PointOfInterest
 import com.garmin.garminkaptain.data.ReviewSummary
 import com.garmin.garminkaptain.model.MapBoundingBox
 import com.squareup.moshi.Moshi
@@ -24,13 +24,17 @@ class KaptainWebservice : Webservice {
         @GET("community/api/v1/points-of-interest/{poiID}/summary")
         fun getPoiSummary(
             @Path("poiID") poiId: Int,
-            //@Query("timestamp") timestamp: Long
         ): Call<ReviewSummary>
 
-        @GET("community/api/v1/points-of-interest/{poiID}")
+        @GET("community/api/v1/points-of-interest/{poiID}/reviews")
         fun getPoiReviews(
             @Path("poiID") poiId: Long,
         ): Call<ReviewListResponse>
+
+        @GET("community/api/v1/points-of-interest/{poiID}")
+        fun getPoi(
+            @Path("poiID") poiId: Int,
+        ): Call<PoiResponse>
     }
 
 
@@ -52,7 +56,6 @@ class KaptainWebservice : Webservice {
             .baseUrl("https://activecaptain-stage.garmin.com/")
             .client(httpClientBuilder.build())
             .build()
-
 
         val service: Api = retrofit.create(Api::class.java)
         return service.getPoiList(bbBox)
@@ -78,5 +81,27 @@ class KaptainWebservice : Webservice {
 
         val service: Api = retrofit.create(Api::class.java)
         return service.getPoiReviews(poiId)
+    }
+
+    override fun getPoi(poiId: Long):  Call<PoiResponse> {
+        val moshi = Moshi.Builder()
+            .addLast(KotlinJsonAdapterFactory())
+            .build()
+
+        val logging = HttpLoggingInterceptor()
+        logging.level = HttpLoggingInterceptor.Level.BODY
+
+        val httpClientBuilder = OkHttpClient()
+            .newBuilder()
+            .addInterceptor(logging)
+
+        val retrofit = Retrofit.Builder()
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .baseUrl("https://activecaptain-stage.garmin.com/")
+            .client(httpClientBuilder.build())
+            .build()
+
+        val service: Api = retrofit.create(Api::class.java)
+        return service.getPoi(poiId.toInt())
     }
 }

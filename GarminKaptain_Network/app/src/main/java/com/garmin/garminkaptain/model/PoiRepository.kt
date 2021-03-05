@@ -1,5 +1,7 @@
 package com.garmin.garminkaptain.model
 
+import android.util.Log
+import com.garmin.garminkaptain.TAG
 import com.garmin.garminkaptain.data.PoiDatabase
 import com.garmin.garminkaptain.data.PointOfInterest
 import com.garmin.garminkaptain.data.Review
@@ -51,8 +53,23 @@ class PoiRepository(
     }
 
 
-    fun getPoi(id: Long): Flow<PointOfInterest> {
-        return database.getPoiDao().getPoi(id)
+    fun getPoi(id: Long): PointOfInterest{
+        var result: PointOfInterest?
+        val cacheResult = database.getPoiDao().getPoi(id)
+        result = cacheResult
+
+        if (result == null || dataIsStale) {
+            val response = webService.getPoi(id).execute()
+            if (response.isSuccessful) {
+                val data = response.body()?.pointOfInterest
+                data?.let{
+                    result = data
+                }
+            } else
+                Log.d(TAG, "Unsuccessful")
+        }
+
+        return result ?: throw Exception("Empty Data")
     }
 
 
