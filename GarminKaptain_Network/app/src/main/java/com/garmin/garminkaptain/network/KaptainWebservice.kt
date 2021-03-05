@@ -27,12 +27,10 @@ class KaptainWebservice : Webservice {
             //@Query("timestamp") timestamp: Long
         ): Call<ReviewSummary>
 
-
-        @GET("community/api/v1/points-of-interest/{poiID}/reviews?_={timestamp}")
+        @GET("community/api/v1/points-of-interest/{poiID}")
         fun getPoiReviews(
-            @Path("poiID") poiId: Int,
-            @Path("timestamp") timestamp: Long
-        ): Call<List<Review>>
+            @Path("poiID") poiId: Long,
+        ): Call<ReviewListResponse>
     }
 
 
@@ -58,5 +56,27 @@ class KaptainWebservice : Webservice {
 
         val service: Api = retrofit.create(Api::class.java)
         return service.getPoiList(bbBox)
+    }
+
+    override fun getPoiReviews(poiId: Long): Call<ReviewListResponse> {
+        val moshi = Moshi.Builder()
+            .addLast(KotlinJsonAdapterFactory())
+            .build()
+
+        val logging = HttpLoggingInterceptor()
+        logging.level = HttpLoggingInterceptor.Level.BODY
+
+        val httpClientBuilder = OkHttpClient()
+            .newBuilder()
+            .addInterceptor(logging)
+
+        val retrofit = Retrofit.Builder()
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .baseUrl("https://activecaptain-stage.garmin.com/")
+            .client(httpClientBuilder.build())
+            .build()
+
+        val service: Api = retrofit.create(Api::class.java)
+        return service.getPoiReviews(poiId)
     }
 }

@@ -90,9 +90,7 @@ class PoiListFragment : Fragment(R.layout.poi_list_fragment), OnSharedPreference
             }
         })
 
-        activity?.let {
-            it.getPreferences(Context.MODE_PRIVATE).registerOnSharedPreferenceChangeListener(this)
-        }
+        activity?.getPreferences(Context.MODE_PRIVATE)?.registerOnSharedPreferenceChangeListener(this)
     }
 
     private fun showProgressIndicator() {

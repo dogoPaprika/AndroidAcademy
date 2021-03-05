@@ -5,4 +5,5 @@ import retrofit2.Call
 
 interface Webservice {
     fun getPoiList(bbBox: MapBoundingBox): Call<PoiListResponse>
+    fun getPoiReviews(poiId: Long): Call<ReviewListResponse>
 }

@@ -5,12 +5,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RatingBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.garmin.garminkaptain.R
+import com.garmin.garminkaptain.data.Resource
 import com.garmin.garminkaptain.data.Review
 import com.garmin.garminkaptain.viewModel.ReviewViewModel
 
@@ -64,8 +67,23 @@ class PoiReviewFragment : Fragment(R.layout.fragment_poi_review) {
             layoutManager = LinearLayoutManager(context)
             adapter = reviewAdapter
         }
-        model.reviewLiveData.observe(viewLifecycleOwner, {
-            reviewAdapter.updateData(it)
+
+        model.reviewLiveData.observe(viewLifecycleOwner, Observer { resouce ->
+            if (resouce != null) {
+                when (resouce) {
+                    is Resource.Error -> {
+                        //hideProgressIndicator()
+                        Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
+                    }
+                    //is Resource.Loading -> showProgressIndicator()
+                    is Resource.Success -> {
+                        //hideProgressIndicator()
+                        if (resouce.data != null) {
+                            reviewAdapter.updateData(resouce.data)
+                        }
+                    }
+                }
+            }
         })
 
         model.getReviews(args.poiId)

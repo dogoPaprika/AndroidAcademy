@@ -9,4 +9,7 @@ class MockWebservice : Webservice {
         TODO("Not yet implemented")
     }
 
+    override fun getPoiReviews(poiId: Long): Call<ReviewListResponse> {
+        TODO("Not yet implemented")
+    }
 }

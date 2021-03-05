@@ -72,7 +72,9 @@ class PoiDetailsFragment : Fragment(R.layout.poi_details_fragment2) {
         ratingBar = view.findViewById(R.id.poi_rating_view)
 
         val model: PoiViewModel by activityViewModels()
-        model.getPoi(args.poiId).observe(viewLifecycleOwner, Observer { onPoiReceived(it) })
+        model.getPoi(args.poiId).observe(viewLifecycleOwner, Observer {
+            onPoiReceived(it)
+        })
 
         reviewsButton.setOnClickListener {
             findNavController().navigate(
@@ -95,46 +97,10 @@ class PoiDetailsFragment : Fragment(R.layout.poi_details_fragment2) {
     }
 
     fun showProgress() {
-        progressBar.visibility = View.VISIBLE
+        progressBar.visibility = VISIBLE
     }
 
     fun hideProgress() {
-        progressBar.visibility = View.GONE
-    }
-
-
-    override fun onStart() {
-        super.onStart()
-        Log.d(TAG, "onStart() called")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.d(TAG, "onResume() called")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Log.d(TAG, "onPause() called")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.d(TAG, "onStop() called")
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        Log.d(TAG, "onDestroyView() called")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d(TAG, "onDestroy() called")
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        Log.d(TAG, "onDetach() called")
+        progressBar.visibility = GONE
     }
 }

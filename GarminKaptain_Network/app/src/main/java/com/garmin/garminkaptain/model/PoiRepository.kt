@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 
 class PoiRepository(
     private val database: PoiDatabase,
-    private val webserice: Webservice = MockWebservice(),
+    private val webService: Webservice = MockWebservice(),
 ) {
 
     private val dataIsStale = true
@@ -20,10 +20,28 @@ class PoiRepository(
         result = cacheList
 
         if (cacheList.isEmpty() || dataIsStale) {
-            val response = webserice.getPoiList(bbBox).execute()
+            val response = webService.getPoiList(bbBox).execute()
             if (response.isSuccessful) {
                 val data = response.body()?.pointsOfInterest
                 if (data != null) {
+                    result = data
+                }
+            }
+        }
+
+        return result ?: throw Exception("Empty Data")
+    }
+
+    suspend fun getPoiReviews(poiId: Long): List<Review> {
+        var result: List<Review>?
+        val cacheList = database.getPoiDao().getAllReview(poiId)
+        result = cacheList
+
+        if (cacheList.isEmpty() || dataIsStale) {
+            val response = webService.getPoiReviews(poiId).execute()
+            if (response.isSuccessful) {
+                val data = response.body()?.reviews
+                data?.let {
                     result = data
                 }
             }
