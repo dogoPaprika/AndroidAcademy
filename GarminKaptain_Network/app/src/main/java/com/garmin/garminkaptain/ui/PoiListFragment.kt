@@ -1,11 +1,14 @@
-package com.example.garminkaptain.ui
+package com.garmin.garminkaptain.ui
 
+import android.content.Context
 import android.content.SharedPreferences
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -13,15 +16,15 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.garminkaptain.R
-import com.example.garminkaptain.TAG
-import com.example.garminkaptain.data.PointOfInterest
-import com.example.garminkaptain.data.poiList
-import com.example.garminkaptain.viewModel.PoiViewModel
-import kotlinx.coroutines.*
+import com.garmin.garminkaptain.R
+import com.garmin.garminkaptain.TAG
+import com.garmin.garminkaptain.data.PointOfInterest
+import com.garmin.garminkaptain.data.Resource
+import com.garmin.garminkaptain.data.mockBoundingBox
+import com.garmin.garminkaptain.viewModel.PoiViewModel
 
-class PoiListFragment : Fragment(R.layout.poi_list_fragment),
-    SharedPreferences.OnSharedPreferenceChangeListener {
+class PoiListFragment : Fragment(R.layout.poi_list_fragment), OnSharedPreferenceChangeListener {
+
     inner class PoiListItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val nameView = itemView.findViewById<TextView>(R.id.poi_item_name_view)
         private val typeView = itemView.findViewById<TextView>(R.id.poi_item_type_view)
@@ -33,11 +36,6 @@ class PoiListFragment : Fragment(R.layout.poi_list_fragment),
                 findNavController().navigate(
                     PoiListFragmentDirections.actionPoiListFragmentToPoiDetailsFragment(poi.id)
                 )
-            }
-
-            itemView.setOnLongClickListener {
-                viewModel.deletePoi(poi.id)
-                true
             }
         }
     }
@@ -58,9 +56,10 @@ class PoiListFragment : Fragment(R.layout.poi_list_fragment),
         override fun getItemCount(): Int = pointsOfInterest.size
     }
 
-    private var pointsOfInterest = poiList
+    private var pointsOfInterest = listOf<PointOfInterest>()
     private var adapter = PoiListAdapter()
     private val viewModel: PoiViewModel by activityViewModels()
+    private var swipeRefreshLayout: SwipeRefreshLayout? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.findViewById<RecyclerView>(R.id.poi_list).apply {
@@ -69,18 +68,39 @@ class PoiListFragment : Fragment(R.layout.poi_list_fragment),
             adapter = this@PoiListFragment.adapter
         }
 
-        val swipeRefreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.swipeToRefresh)
-        swipeRefreshLayout.setOnRefreshListener { viewModel.loadPoiList() }
+        swipeRefreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.swipeToRefresh)
+        swipeRefreshLayout?.setOnRefreshListener { viewModel.refreshPoiList() }
 
-        viewModel.getLoading()
-            .observe(viewLifecycleOwner, Observer { swipeRefreshLayout.isRefreshing = it })
-
-        viewModel.getPoiList().observe(viewLifecycleOwner, Observer {
-            it?.let {
-                pointsOfInterest = it
-                adapter.notifyDataSetChanged()
+        viewModel.getPoiListData().observe(viewLifecycleOwner, Observer { resouce ->
+            if (resouce != null) {
+                when (resouce) {
+                    is Resource.Error -> {
+                        hideProgressIndicator()
+                        Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
+                    }
+                    is Resource.Loading -> showProgressIndicator()
+                    is Resource.Success -> {
+                        hideProgressIndicator()
+                        if (resouce.data != null) {
+                            pointsOfInterest = resouce.data
+                            adapter.notifyDataSetChanged()
+                        }
+                    }
+                }
             }
         })
+
+        activity?.let {
+            it.getPreferences(Context.MODE_PRIVATE).registerOnSharedPreferenceChangeListener(this)
+        }
+    }
+
+    private fun showProgressIndicator() {
+        swipeRefreshLayout?.isRefreshing = true
+    }
+
+    private fun hideProgressIndicator() {
+        swipeRefreshLayout?.isRefreshing = false
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {

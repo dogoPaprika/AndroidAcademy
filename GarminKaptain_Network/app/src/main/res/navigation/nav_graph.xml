@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/poiMapFragment">
+
+    <fragment
+        android:id="@+id/poiListFragment"
+        android:name="com.garmin.garminkaptain.ui.PoiListFragment"
+        android:label="PoiListFragment"
+        tools:layout="@layout/poi_list_fragment">
+        <action
+            android:id="@+id/action_poiListFragment_to_poiDetailsFragment"
+            app:destination="@id/poiDetailsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/poiDetailsFragment"
+        android:name="com.garmin.garminkaptain.ui.PoiDetailsFragment"
+        android:label="PoiDetailsFragment"
+        tools:layout="@layout/poi_details_fragment">
+        <argument
+            android:name="poiId"
+            android:defaultValue="-1L"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_poiDetailsFragment_to_poiReviewFragment"
+            app:destination="@id/poiReviewFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/poiMapFragment"
+        android:name="com.garmin.garminkaptain.ui.PoiMapFragment"
+        android:label="PoiMapFragment">
+        <action
+            android:id="@+id/action_poiMapFragment_to_poiDetailsFragment"
+            app:destination="@id/poiDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/poiReviewFragment"
+        android:name="com.garmin.garminkaptain.ui.PoiReviewFragment"
+        android:label="fragment_poi_review"
+        tools:layout="@layout/fragment_poi_review">
+        <argument
+            android:name="poiId"
+            android:defaultValue="-1L"
+            app:argType="long" />
+    </fragment>
+</navigation>
