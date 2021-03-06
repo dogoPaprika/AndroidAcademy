@@ -5,13 +5,15 @@ import com.garmin.garminkaptain.TAG
 import com.garmin.garminkaptain.data.PoiDatabase
 import com.garmin.garminkaptain.data.PointOfInterest
 import com.garmin.garminkaptain.data.Review
+import com.garmin.garminkaptain.data.ReviewSummary
+import com.garmin.garminkaptain.network.KaptainWebservice
 import com.garmin.garminkaptain.network.MockWebservice
 import com.garmin.garminkaptain.network.Webservice
 import kotlinx.coroutines.flow.Flow
 
 class PoiRepository(
     private val database: PoiDatabase,
-    private val webService: Webservice = MockWebservice(),
+    private val webService: Webservice = KaptainWebservice(),
 ) {
 
     private val dataIsStale = true
@@ -62,6 +64,25 @@ class PoiRepository(
             val response = webService.getPoi(id).execute()
             if (response.isSuccessful) {
                 val data = response.body()?.pointOfInterest
+                data?.let{
+                    result = data
+                }
+            } else
+                Log.d(TAG, "Unsuccessful")
+        }
+
+        return result ?: throw Exception("Empty Data")
+    }
+
+    fun getReviewSummary(id: Long): ReviewSummary{
+        var result: ReviewSummary?
+        val cacheResult = database.getPoiDao().getReviewSummary(id)
+        result = cacheResult
+
+        if (result == null || dataIsStale) {
+            val response = webService.getReviewSummary(id).execute()
+            if (response.isSuccessful) {
+                val data = response.body()?.reviewSummary
                 data?.let{
                     result = data
                 }

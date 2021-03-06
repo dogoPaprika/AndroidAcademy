@@ -8,4 +8,5 @@ interface Webservice {
     fun getPoiList(bbBox: MapBoundingBox): Call<PoiListResponse>
     fun getPoiReviews(poiId: Long): Call<ReviewListResponse>
     fun getPoi(poiId: Long): Call<PoiResponse>
+    fun getReviewSummary(id: Long): Call<PoiSummaryResponse>
 }

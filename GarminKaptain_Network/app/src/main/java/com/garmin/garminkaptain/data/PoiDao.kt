@@ -38,4 +38,8 @@ interface PoiDao {
     @Query("SELECT * FROM poi_table")
     suspend fun getAllPoiWithReviews(): List<PoiWithReviews>
 
+    @Transaction
+    @Query("SELECT * from review_summary_table WHERE poiIdReviewSummary=:id")
+    fun getReviewSummary(id: Long): ReviewSummary?
+
 }

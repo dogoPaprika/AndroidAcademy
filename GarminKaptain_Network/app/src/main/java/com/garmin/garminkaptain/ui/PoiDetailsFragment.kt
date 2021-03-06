@@ -21,7 +21,9 @@ import androidx.navigation.fragment.navArgs
 import com.garmin.garminkaptain.R
 import com.garmin.garminkaptain.TAG
 import com.garmin.garminkaptain.data.PointOfInterest
+import com.garmin.garminkaptain.data.ReviewSummary
 import com.garmin.garminkaptain.viewModel.PoiViewModel
+import com.garmin.garminkaptain.viewModel.ReviewViewModel
 
 class PoiDetailsFragment : Fragment(R.layout.poi_details_fragment2) {
 
@@ -76,6 +78,11 @@ class PoiDetailsFragment : Fragment(R.layout.poi_details_fragment2) {
             onPoiReceived(it?.data)
         })
 
+        val reviewModel: ReviewViewModel by activityViewModels()
+        reviewModel.getReviewSummary(args.poiId).observe(viewLifecycleOwner, {
+            onReviewSummaryReceived(it?.data)
+        })
+
         reviewsButton.setOnClickListener {
             findNavController().navigate(
                 PoiDetailsFragmentDirections.actionPoiDetailsFragmentToPoiReviewFragment(
@@ -89,10 +96,14 @@ class PoiDetailsFragment : Fragment(R.layout.poi_details_fragment2) {
         detailsGroup.visibility = VISIBLE
         nameTextView.text = poi.name
         typeTextView.text = poi.poiType
-        ratingBar.rating = poi.reviewSummary?.averageRating?.toFloat() ?: 0.0F
 
-        val numberOfReviews = poi.reviewSummary?.numberOfReviews
-        numReviewsTextView.text = getString(R.string.label_num_reviews, numberOfReviews?:0)
+    }
+
+    private fun onReviewSummaryReceived(reviewSummary: ReviewSummary?) = reviewSummary?.let {
+        ratingBar.rating = reviewSummary.averageRating.toFloat()
+
+        val numberOfReviews = reviewSummary.numberOfReviews
+        numReviewsTextView.text = getString(R.string.label_num_reviews, numberOfReviews)
         reviewsButton.isEnabled = numberOfReviews != null && numberOfReviews > 0
     }
 

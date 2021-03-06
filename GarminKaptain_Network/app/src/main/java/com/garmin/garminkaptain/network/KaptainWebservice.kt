@@ -1,7 +1,5 @@
 package com.garmin.garminkaptain.network
 
-import com.garmin.garminkaptain.data.PointOfInterest
-import com.garmin.garminkaptain.data.ReviewSummary
 import com.garmin.garminkaptain.model.MapBoundingBox
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -24,7 +22,7 @@ class KaptainWebservice : Webservice {
         @GET("community/api/v1/points-of-interest/{poiID}/summary")
         fun getPoiSummary(
             @Path("poiID") poiId: Int,
-        ): Call<ReviewSummary>
+        ): Call<PoiSummaryResponse>
 
         @GET("community/api/v1/points-of-interest/{poiID}/reviews")
         fun getPoiReviews(
@@ -37,71 +35,42 @@ class KaptainWebservice : Webservice {
         ): Call<PoiResponse>
     }
 
-
-    override fun getPoiList(bbBox: MapBoundingBox): Call<PoiListResponse> {
-
-        val moshi = Moshi.Builder()
+    companion object{
+        private val moshi: Moshi = Moshi.Builder()
             .addLast(KotlinJsonAdapterFactory())
             .build()
 
-        val logging = HttpLoggingInterceptor()
-        logging.level = HttpLoggingInterceptor.Level.BODY
+        private val logging = HttpLoggingInterceptor().apply {
+            this.level = HttpLoggingInterceptor.Level.BODY
+        }
 
-        val httpClientBuilder = OkHttpClient()
+        private val httpClientBuilder: OkHttpClient.Builder = OkHttpClient()
             .newBuilder()
             .addInterceptor(logging)
 
-        val retrofit = Retrofit.Builder()
+        val retrofit: Retrofit = Retrofit.Builder()
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .baseUrl("https://activecaptain-stage.garmin.com/")
             .client(httpClientBuilder.build())
             .build()
 
         val service: Api = retrofit.create(Api::class.java)
+    }
+
+
+    override fun getPoiList(bbBox: MapBoundingBox): Call<PoiListResponse> {
         return service.getPoiList(bbBox)
     }
 
     override fun getPoiReviews(poiId: Long): Call<ReviewListResponse> {
-        val moshi = Moshi.Builder()
-            .addLast(KotlinJsonAdapterFactory())
-            .build()
-
-        val logging = HttpLoggingInterceptor()
-        logging.level = HttpLoggingInterceptor.Level.BODY
-
-        val httpClientBuilder = OkHttpClient()
-            .newBuilder()
-            .addInterceptor(logging)
-
-        val retrofit = Retrofit.Builder()
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .baseUrl("https://activecaptain-stage.garmin.com/")
-            .client(httpClientBuilder.build())
-            .build()
-
-        val service: Api = retrofit.create(Api::class.java)
         return service.getPoiReviews(poiId)
     }
 
     override fun getPoi(poiId: Long):  Call<PoiResponse> {
-        val moshi = Moshi.Builder()
-            .addLast(KotlinJsonAdapterFactory())
-            .build()
-
-        val logging = HttpLoggingInterceptor()
-        logging.level = HttpLoggingInterceptor.Level.BODY
-
-        val httpClientBuilder = OkHttpClient()
-            .newBuilder()
-            .addInterceptor(logging)
-
-        val retrofit = Retrofit.Builder()
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .baseUrl("https://activecaptain-stage.garmin.com/")
-            .client(httpClientBuilder.build())
-            .build()
-
-        val service: Api = retrofit.create(Api::class.java)
         return service.getPoi(poiId.toInt())
+    }
+
+    override fun getReviewSummary(id: Long): Call<PoiSummaryResponse> {
+        return service.getPoiSummary(id.toInt())
     }
 }

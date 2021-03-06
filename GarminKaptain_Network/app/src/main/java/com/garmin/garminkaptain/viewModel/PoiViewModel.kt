@@ -7,6 +7,8 @@ import com.garmin.garminkaptain.KaptainApplication
 import com.garmin.garminkaptain.TAG
 import com.garmin.garminkaptain.data.PointOfInterest
 import com.garmin.garminkaptain.data.Resource
+import com.garmin.garminkaptain.data.Review
+import com.garmin.garminkaptain.data.ReviewSummary
 import com.garmin.garminkaptain.model.MapBoundingBox
 import com.garmin.garminkaptain.model.PoiRepository
 import com.garmin.garminkaptain.network.KaptainWebservice

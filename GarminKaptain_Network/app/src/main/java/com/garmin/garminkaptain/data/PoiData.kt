@@ -11,7 +11,6 @@ data class PointOfInterest(
     @Embedded val mapLocation: MapLocation,
     val name: String?,
     val poiType: String,
-    @Embedded val reviewSummary: ReviewSummary?
 )
 
 data class MapLocation(
@@ -19,9 +18,11 @@ data class MapLocation(
     val longitude: Double
 )
 
+@Entity(tableName = "review_summary_table")
 data class ReviewSummary(
     val averageRating: Double,
-    val numberOfReviews: Int
+    val numberOfReviews: Int,
+    @PrimaryKey val poiIdReviewSummary: Long
 )
 
 @Entity(tableName = "review_table")

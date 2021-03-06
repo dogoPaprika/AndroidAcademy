@@ -11,6 +11,7 @@ import com.garmin.garminkaptain.TAG
 import com.garmin.garminkaptain.data.PointOfInterest
 import com.garmin.garminkaptain.data.Resource
 import com.garmin.garminkaptain.data.Review
+import com.garmin.garminkaptain.data.ReviewSummary
 import com.garmin.garminkaptain.model.PoiRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -25,6 +26,10 @@ class ReviewViewModel(application: Application) : AndroidViewModel(application) 
 
     val reviewLiveData: LiveData<Resource<List<Review>>>
         get() = _reviewLiveData
+
+    private val reviewSummaryLiveData: MutableLiveData<Resource<ReviewSummary>> by lazy {
+        MutableLiveData<Resource<ReviewSummary>>()
+    }
 
 //    fun getReviews(id: Long) = viewModelScope.launch {
 //        _reviewLiveData.postValue(poiRepository.getReviews(id))
@@ -43,6 +48,29 @@ class ReviewViewModel(application: Application) : AndroidViewModel(application) 
             val message = ex.message ?: ""
             Log.d(TAG, "Exception $message")
             _reviewLiveData.postValue(Resource.Error(message))
+        }
+    }
+
+    fun getReviewSummary(id: Long): LiveData<Resource<ReviewSummary>> {
+        loadReviewSummary(id)
+        return reviewSummaryLiveData
+    }
+
+    fun loadReviewSummary(id: Long) {
+        viewModelScope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    reviewSummaryLiveData.postValue(Resource.Loading())
+                    val reviewSummary = poiRepository.getReviewSummary(id)
+                    val success = Resource.Success(reviewSummary)
+
+                    reviewSummaryLiveData.postValue(success)
+                }
+            } catch (ex: Exception) {
+                val message = ex.message ?: ""
+                Log.d(TAG, "Exception $message")
+                reviewSummaryLiveData.postValue(Resource.Error(message))
+            }
         }
     }
 }
