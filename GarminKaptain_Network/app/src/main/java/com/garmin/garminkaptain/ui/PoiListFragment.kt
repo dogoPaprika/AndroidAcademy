@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -19,8 +18,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.garmin.garminkaptain.R
 import com.garmin.garminkaptain.TAG
 import com.garmin.garminkaptain.data.PointOfInterest
-import com.garmin.garminkaptain.data.Resource
-import com.garmin.garminkaptain.data.mockBoundingBox
 import com.garmin.garminkaptain.viewModel.PoiViewModel
 
 class PoiListFragment : Fragment(R.layout.poi_list_fragment), OnSharedPreferenceChangeListener {
@@ -68,29 +65,17 @@ class PoiListFragment : Fragment(R.layout.poi_list_fragment), OnSharedPreference
             adapter = this@PoiListFragment.adapter
         }
 
-        swipeRefreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.swipeToRefresh)
+        swipeRefreshLayout = view.findViewById(R.id.swipeToRefresh)
         swipeRefreshLayout?.setOnRefreshListener { viewModel.refreshPoiList() }
 
-        viewModel.getPoiListData().observe(viewLifecycleOwner, Observer { resouce ->
-            if (resouce != null) {
-                when (resouce) {
-                    is Resource.Error -> {
-                        hideProgressIndicator()
-                        Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
-                    }
-                    is Resource.Loading -> showProgressIndicator()
-                    is Resource.Success -> {
-                        hideProgressIndicator()
-                        if (resouce.data != null) {
-                            pointsOfInterest = resouce.data
-                            adapter.notifyDataSetChanged()
-                        }
-                    }
-                }
-            }
+        viewModel.getPoiListData().observe(viewLifecycleOwner, Observer {
+            pointsOfInterest = it
+            adapter.notifyDataSetChanged()
+
         })
 
-        activity?.getPreferences(Context.MODE_PRIVATE)?.registerOnSharedPreferenceChangeListener(this)
+        activity?.getPreferences(Context.MODE_PRIVATE)
+            ?.registerOnSharedPreferenceChangeListener(this)
     }
 
     private fun showProgressIndicator() {

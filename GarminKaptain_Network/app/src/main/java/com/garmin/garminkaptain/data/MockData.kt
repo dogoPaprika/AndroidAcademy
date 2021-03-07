@@ -29,7 +29,7 @@ val poiList: List<PointOfInterest> = listOf(
         "Golden Gate Bridge",
         "Bridge",
 
-    ),
+        ),
     PointOfInterest(
         60928,
         MapLocation(37.8325155338083, -122.47500389814363),
@@ -60,7 +60,7 @@ val poiList: List<PointOfInterest> = listOf(
         "Dangerous Rock",
         "Hazard",
 
-    ),
+        ),
     PointOfInterest(
         57109,
         MapLocation(37.87572310328571, -122.50570595169079),
@@ -96,8 +96,12 @@ val reviews = LongSparseArray<List<Review>>(poiList.size).also { map ->
 }
 
 
-
-val mockBoundingBox = MapBoundingBox(north = 28.074301976209195, south = 27.837456158746768, east = -80.2721992135048, west = -80.65328747034074)
+val mockBoundingBox = MapBoundingBox(
+    north = 28.074301976209195,
+    south = 27.837456158746768,
+    east = -80.2721992135048,
+    west = -80.65328747034074
+)
 
 
 private fun randomReviewList(poiId: Long, size: Int, rating: Double) =

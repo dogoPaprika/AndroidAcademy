@@ -7,9 +7,7 @@ import com.garmin.garminkaptain.data.PointOfInterest
 import com.garmin.garminkaptain.data.Review
 import com.garmin.garminkaptain.data.ReviewSummary
 import com.garmin.garminkaptain.network.KaptainWebservice
-import com.garmin.garminkaptain.network.MockWebservice
 import com.garmin.garminkaptain.network.Webservice
-import kotlinx.coroutines.flow.Flow
 
 class PoiRepository(
     private val database: PoiDatabase,
@@ -44,7 +42,7 @@ class PoiRepository(
         if (cacheList.isEmpty() || dataIsStale) {
             val response = webService.getPoiReviews(poiId).execute()
             if (response.isSuccessful) {
-                val data = response.body()?.reviews
+                val data = response.body()
                 data?.let {
                     result = data
                 }
@@ -54,27 +52,7 @@ class PoiRepository(
         return result ?: throw Exception("Empty Data")
     }
 
-
-    fun getPoi(id: Long): PointOfInterest{
-        var result: PointOfInterest?
-        val cacheResult = database.getPoiDao().getPoi(id)
-        result = cacheResult
-
-        if (result == null || dataIsStale) {
-            val response = webService.getPoi(id).execute()
-            if (response.isSuccessful) {
-                val data = response.body()?.pointOfInterest
-                data?.let{
-                    result = data
-                }
-            } else
-                Log.d(TAG, "Unsuccessful")
-        }
-
-        return result ?: throw Exception("Empty Data")
-    }
-
-    fun getReviewSummary(id: Long): ReviewSummary{
+    fun getReviewSummary(id: Long): ReviewSummary {
         var result: ReviewSummary?
         val cacheResult = database.getPoiDao().getReviewSummary(id)
         result = cacheResult
@@ -83,8 +61,8 @@ class PoiRepository(
             val response = webService.getReviewSummary(id).execute()
             if (response.isSuccessful) {
                 val data = response.body()?.reviewSummary
-                data?.let{
-                    result = data
+                data?.let {
+                    result = it
                 }
             } else
                 Log.d(TAG, "Unsuccessful")
@@ -93,8 +71,6 @@ class PoiRepository(
         return result ?: throw Exception("Empty Data")
     }
 
-
-    suspend fun getReviews(id: Long): List<Review> {
-        return database.getPoiDao().getPoiWithReviews(id).reviews
-    }
+    suspend fun getPoiList() = database.getPoiDao().getAllPoi()
+    fun getPoi(id: Long) = database.getPoiDao().getPoi(id)
 }

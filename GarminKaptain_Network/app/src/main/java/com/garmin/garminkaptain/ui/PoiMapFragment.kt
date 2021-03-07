@@ -38,7 +38,11 @@ class PoiMapFragment : Fragment(R.layout.poi_map_fragment), GoogleMap.OnInfoWind
         model.getPoiList(bbBox).observe(viewLifecycleOwner, Observer { resource ->
             if (resource != null) {
                 when (resource) {
-                    is Resource.Error -> Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
+                    is Resource.Error -> Toast.makeText(
+                        requireContext(),
+                        "Error",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     is Resource.Loading -> {
                     }
                     is Resource.Success -> {

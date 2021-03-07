@@ -7,16 +7,12 @@ import com.garmin.garminkaptain.KaptainApplication
 import com.garmin.garminkaptain.TAG
 import com.garmin.garminkaptain.data.PointOfInterest
 import com.garmin.garminkaptain.data.Resource
-import com.garmin.garminkaptain.data.Review
-import com.garmin.garminkaptain.data.ReviewSummary
 import com.garmin.garminkaptain.model.MapBoundingBox
 import com.garmin.garminkaptain.model.PoiRepository
 import com.garmin.garminkaptain.network.KaptainWebservice
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.lang.Exception
 
 
 class PoiViewModel(application: Application) : AndroidViewModel(application) {
@@ -33,12 +29,17 @@ class PoiViewModel(application: Application) : AndroidViewModel(application) {
         MutableLiveData<Resource<List<PointOfInterest>>>()
     }
 
+    private val poiListLiveData2: MutableLiveData<List<PointOfInterest>> by lazy {
+        MutableLiveData<List<PointOfInterest>>()
+    }
+
     private val poiLiveData: MutableLiveData<Resource<PointOfInterest>> by lazy {
         MutableLiveData<Resource<PointOfInterest>>()
     }
 
-    fun getPoiListData(): LiveData<Resource<List<PointOfInterest>>> {
-        return poiListLiveData
+    fun getPoiListData(): LiveData<List<PointOfInterest>> {
+        loadPoiList()
+        return poiListLiveData2
     }
 
     fun getPoi(id: Long): LiveData<Resource<PointOfInterest>?> {
@@ -46,7 +47,7 @@ class PoiViewModel(application: Application) : AndroidViewModel(application) {
         return poiLiveData
     }
 
-    fun loadPoi(id: Long) {
+    private fun loadPoi(id: Long) {
         viewModelScope.launch {
             try {
                 withContext(Dispatchers.IO) {
@@ -89,6 +90,12 @@ class PoiViewModel(application: Application) : AndroidViewModel(application) {
                 Log.d(TAG, "Exception $message")
                 poiListLiveData.postValue(Resource.Error(message))
             }
+        }
+    }
+
+    private fun loadPoiList() {
+        viewModelScope.launch {
+            poiListLiveData2.postValue(poiRepository.getPoiList())
         }
     }
 

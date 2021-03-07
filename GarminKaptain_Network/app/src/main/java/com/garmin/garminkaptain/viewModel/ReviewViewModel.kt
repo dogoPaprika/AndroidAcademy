@@ -8,7 +8,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.garmin.garminkaptain.KaptainApplication
 import com.garmin.garminkaptain.TAG
-import com.garmin.garminkaptain.data.PointOfInterest
 import com.garmin.garminkaptain.data.Resource
 import com.garmin.garminkaptain.data.Review
 import com.garmin.garminkaptain.data.ReviewSummary
@@ -16,7 +15,6 @@ import com.garmin.garminkaptain.model.PoiRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.lang.Exception
 
 class ReviewViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -31,11 +29,7 @@ class ReviewViewModel(application: Application) : AndroidViewModel(application) 
         MutableLiveData<Resource<ReviewSummary>>()
     }
 
-//    fun getReviews(id: Long) = viewModelScope.launch {
-//        _reviewLiveData.postValue(poiRepository.getReviews(id))
-//    }
-
-    fun getReviews(id: Long) =  viewModelScope.launch {
+    fun getReviews(id: Long) = viewModelScope.launch {
         try {
             withContext(Dispatchers.IO) {
                 _reviewLiveData.postValue(Resource.Loading())
@@ -56,7 +50,7 @@ class ReviewViewModel(application: Application) : AndroidViewModel(application) 
         return reviewSummaryLiveData
     }
 
-    fun loadReviewSummary(id: Long) {
+    private fun loadReviewSummary(id: Long) {
         viewModelScope.launch {
             try {
                 withContext(Dispatchers.IO) {
@@ -68,7 +62,7 @@ class ReviewViewModel(application: Application) : AndroidViewModel(application) 
                 }
             } catch (ex: Exception) {
                 val message = ex.message ?: ""
-                Log.d(TAG, "Exception $message")
+                Log.d(TAG, "Exception review summary $message")
                 reviewSummaryLiveData.postValue(Resource.Error(message))
             }
         }

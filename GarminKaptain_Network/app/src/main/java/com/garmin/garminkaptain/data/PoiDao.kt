@@ -1,7 +1,6 @@
 package com.garmin.garminkaptain.data
 
 import androidx.room.*
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PoiDao {
@@ -39,7 +38,7 @@ interface PoiDao {
     suspend fun getAllPoiWithReviews(): List<PoiWithReviews>
 
     @Transaction
-    @Query("SELECT * from review_summary_table WHERE poiIdReviewSummary=:id")
+    @Query("SELECT * from review_summary_table WHERE poiId=:id")
     fun getReviewSummary(id: Long): ReviewSummary?
 
 }

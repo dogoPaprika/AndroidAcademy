@@ -15,7 +15,7 @@ class KaptainApplication : Application() {
 
     lateinit var poiDatabase: PoiDatabase
 
-    val roomListener = object : RoomDatabase.Callback() {
+    private val roomListener = object : RoomDatabase.Callback() {
         override fun onOpen(db: SupportSQLiteDatabase) {
             super.onCreate(db)
 

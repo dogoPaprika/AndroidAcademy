@@ -8,10 +8,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ProgressBar
-import android.widget.RatingBar
-import android.widget.TextView
+import android.widget.*
 import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -21,6 +18,7 @@ import androidx.navigation.fragment.navArgs
 import com.garmin.garminkaptain.R
 import com.garmin.garminkaptain.TAG
 import com.garmin.garminkaptain.data.PointOfInterest
+import com.garmin.garminkaptain.data.Resource
 import com.garmin.garminkaptain.data.ReviewSummary
 import com.garmin.garminkaptain.viewModel.PoiViewModel
 import com.garmin.garminkaptain.viewModel.ReviewViewModel
@@ -80,7 +78,16 @@ class PoiDetailsFragment : Fragment(R.layout.poi_details_fragment2) {
 
         val reviewModel: ReviewViewModel by activityViewModels()
         reviewModel.getReviewSummary(args.poiId).observe(viewLifecycleOwner, {
-            onReviewSummaryReceived(it?.data)
+            it.let {
+                when (it) {
+                    is Resource.Error -> Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
+                    is Resource.Loading -> showProgress()
+                    is Resource.Success -> {
+                        hideProgress()
+                        onReviewSummaryReceived(it.data)
+                    }
+                }
+            }
         })
 
         reviewsButton.setOnClickListener {
@@ -104,7 +111,7 @@ class PoiDetailsFragment : Fragment(R.layout.poi_details_fragment2) {
 
         val numberOfReviews = reviewSummary.numberOfReviews
         numReviewsTextView.text = getString(R.string.label_num_reviews, numberOfReviews)
-        reviewsButton.isEnabled = numberOfReviews != null && numberOfReviews > 0
+        reviewsButton.isEnabled = numberOfReviews > 0
     }
 
     fun showProgress() {

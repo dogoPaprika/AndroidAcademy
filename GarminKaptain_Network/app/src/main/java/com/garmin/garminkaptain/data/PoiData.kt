@@ -20,15 +20,23 @@ data class MapLocation(
 
 @Entity(tableName = "review_summary_table")
 data class ReviewSummary(
+    @PrimaryKey(autoGenerate = true) val summaryId: Long?,
     val averageRating: Double,
     val numberOfReviews: Int,
-    @PrimaryKey val poiIdReviewSummary: Long
-)
+    val poiId: Long?
+) {
+    constructor(averageRating: Double, numberOfReviews: Int, poiId: Long) : this(
+        0,
+        averageRating,
+        numberOfReviews,
+        poiId
+    )
+}
 
 @Entity(tableName = "review_table")
 data class Review(
     @PrimaryKey val id: Long,
-    val poiId: Long,
+    val poiId: Long?,
     val rating: Double,
     val title: String,
     val text: String
